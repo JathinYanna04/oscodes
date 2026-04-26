@@ -20,7 +20,7 @@ int main(){
             scanf("%d",&max[i][j]);
         }
     }
-    printf("\nEnter Available Matrix:\n");
+    printf("\nEnter Available:\n");
     for(int i=0;i<n;i++){
         for(int j=0;j<m;j++){
             scanf("%d",&avail[j]);

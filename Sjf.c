@@ -39,7 +39,7 @@ int main(){
     for(int i=1;i<n;i++){
         int idx=i;
         for(int j=i;j<n;j++){
-            if((pro[i-1].ct>=pro[j].at)&&(pro[j].bt<pro[idx].bt)){
+            if(((pro[i-1].ct >= pro[j].at) || idx == i) && pro[j].bt < pro[idx].bt){
                 idx=j;
             }
         }

@@ -1,0 +1,33 @@
+# Build artifacts
+*.exe
+*.out
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+
+# Debug and profiling files
+*.pdb
+*.ilk
+*.dSYM/
+*.prof
+*.gcda
+*.gcno
+*.gcov
+
+# Editor/temp files
+*.log
+*.tmp
+*.swp
+*.swo
+*~
+.vscode/
+
+# VS Code Code Runner temp file
+tempCodeRunnerFile.c
+
+# Local binary without extension (from gcc output)
+chatbot

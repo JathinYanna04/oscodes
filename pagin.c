@@ -25,7 +25,7 @@ int main(){
     int frm_no=pg_tab[pgno];
     int phys_add=(frm_no*pgsize)+offs;
     printf("Page Number: %d\n",pgno);
-    printf("Offset: %d\n",pgno);
+    printf("Offset: %d\n",offs);
     printf("Frame Number: %d\n",frm_no);
     printf("Physical Address: %d\n",phys_add);
 }

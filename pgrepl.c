@@ -1,60 +1,121 @@
 #include <stdio.h>
 #define M 100
 
-int find(int f[], int n, int p){
-    for(int i=0;i<n;i++) if(f[i]==p) return 1;
+int hit(int f[], int fsize, int p){
+    for(int i=0;i<fsize;i++)
+        if(f[i]==p) return 1;
     return 0;
 }
 
-int fifo(int p[],int n,int f){
-    if(!f) return n;
-    int fr[M],i,j=0,c=0;
-    for(i=0;i<f;i++) fr[i]=-1;
-    for(i=0;i<n;i++)
-        if(!find(fr,f,p[i]))
-            fr[j++%f]=p[i],c++;
-    return c;
+/* ---------- FIFO ---------- */
+int fifo(int p[],int n,int fsize,int *hitc){
+    int f[M],i,j=0,fault=0;
+    *hitc = 0;
+
+    for(i=0;i<fsize;i++) f[i]=-1;
+
+    for(i=0;i<n;i++){
+        if(hit(f,fsize,p[i])){
+            (*hitc)++;
+        }else{
+            f[j%fsize]=p[i];
+            j++;
+            fault++;
+        }
+    }
+    return fault;
 }
 
-int lru(int p[],int n,int f){
-    if(!f) return n;
-    int fr[M],t[M]={0},i,j,c=0,tm=0;
-    for(i=0;i<f;i++) fr[i]=-1;
+/* ---------- LRU ---------- */
+int lru(int p[],int n,int fsize,int *hitc){
+    int f[M],t[M]={0},i,j,fault=0,time=0;
+    *hitc = 0;
+
+    for(i=0;i<fsize;i++) f[i]=-1;
+
     for(i=0;i<n;i++){
-        for(j=0;j<f;j++)
-            if(fr[j]==p[i]){ t[j]=++tm; break; }
-        if(j==f){
+        for(j=0;j<fsize;j++){
+            if(f[j]==p[i]){
+                t[j]=++time;
+                (*hitc)++;
+                break;
+            }
+        }
+
+        if(j==fsize){
             int l=0;
-            for(j=1;j<f;j++) if(t[j]<t[l]) l=j;
-            fr[l]=p[i]; t[l]=++tm; c++;
+            for(j=1;j<fsize;j++)
+                if(t[j]<t[l]) l=j;
+
+            f[l]=p[i];
+            t[l]=++time;
+            fault++;
         }
     }
-    return c;
+    return fault;
 }
 
-int opt(int p[],int n,int f){
-    if(!f) return n;
-    int fr[M],i,j,k,c=0,pos;
-    for(i=0;i<f;i++) fr[i]=-1;
+/* ---------- OPT ---------- */
+int opt(int p[],int n,int fsize,int *hitc){
+    int f[M],i,j,k,fault=0,pos;
+    *hitc = 0;
+
+    for(i=0;i<fsize;i++) f[i]=-1;
+
     for(i=0;i<n;i++){
-        if(find(fr,f,p[i])) continue;
-        pos=0; int far=-1;
-        for(j=0;j<f;j++){
-            for(k=i+1;k<n;k++) if(fr[j]==p[k]) break;
-            if(k==n){ pos=j; break; }
-            if(k>far) far=k,pos=j;
+        if(hit(f,fsize,p[i])){
+            (*hitc)++;
+            continue;
         }
-        fr[pos]=p[i]; c++;
+
+        pos=0;
+        int far=-1;
+
+        for(j=0;j<fsize;j++){
+            for(k=i+1;k<n;k++)
+                if(f[j]==p[k]) break;
+
+            if(k==n){ pos=j; break; }
+            if(k>far){ far=k; pos=j; }
+        }
+
+        f[pos]=p[i];
+        fault++;
     }
-    return c;
+    return fault;
 }
 
+/* ---------- MAIN ---------- */
 int main(){
-    int p[M],n,f,i;
+    int p[M],n,f;
+
     scanf("%d",&n);
-    for(i=0;i<n;i++) scanf("%d",&p[i]);
+    for(int i=0;i<n;i++) scanf("%d",&p[i]);
     scanf("%d",&f);
 
-    printf("FIFO:%d\nLRU:%d\nOPT:%d",
-        fifo(p,n,f), lru(p,n,f), opt(p,n,f));
+    int fh,fl,fo;
+    int ff,lf,of;
+
+    ff = fifo(p,n,f,&fh);
+    lf = lru(p,n,f,&fl);
+    of = opt(p,n,f,&fo);
+
+    printf("\n--- RESULTS ---\n");
+
+    printf("\nFIFO -> Faults: %d  Hits: %d  Fault Ratio: %.2f  Hit Ratio: %.2f",
+        ff, fh,
+        (float)ff/n,
+        (float)fh/n);
+
+    printf("\nLRU  -> Faults: %d  Hits: %d  Fault Ratio: %.2f  Hit Ratio: %.2f",
+        lf, fl,
+        (float)lf/n,
+        (float)fl/n);
+
+    printf("\nOPT  -> Faults: %d  Hits: %d  Fault Ratio: %.2f  Hit Ratio: %.2f\n",
+        of, fo,
+        (float)of/n,
+        (float)fo/n);
+
+    return 0;
 }

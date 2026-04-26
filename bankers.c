@@ -7,7 +7,7 @@ int main(){
     scanf("%d",&n);
     printf("Enter no of resources:");
     scanf("%d",&m);
-    int alloc[n][m],max[n][m],need[n][m],avail[m];
+    int alloc[n][m],max[n][m],need[n][m],avail[m],total[m];
     printf("\nEnter Allocation Matrix:\n");
     for(int i=0;i<n;i++){
         for(int j=0;j<m;j++){
@@ -20,11 +20,16 @@ int main(){
             scanf("%d",&max[i][j]);
         }
     }
-    printf("\nEnter Available:\n");
-    for(int i=0;i<n;i++){
-        for(int j=0;j<m;j++){
-            scanf("%d",&avail[j]);
+    printf("\nEnter Total Resources: ");
+    for(int i = 0; i < m; i++) {
+        scanf("%d", &total[i]);
+    }
+    for(int j = 0; j < m; j++) {
+        int sum = 0;
+        for(int i = 0; i < n; i++) {
+            sum += alloc[i][j];
         }
+        avail[j] = total[j] - sum;
     }
     for(int i=0;i<n;i++){
         for(int j=0;j<m;j++){

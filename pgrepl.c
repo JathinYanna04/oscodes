@@ -9,6 +9,7 @@ int hit(int f[], int fsize, int p){
 
 /* ---------- FIFO ---------- */
 int fifo(int p[],int n,int fsize,int *hitc){
+    printf("FIFO\n");
     int f[M],i,j=0,fault=0;
     *hitc = 0;
     for(i=0;i<fsize;i++) f[i]=-1;
@@ -16,6 +17,7 @@ int fifo(int p[],int n,int fsize,int *hitc){
         if(hit(f,fsize,p[i])){
             (*hitc)++;
         }else{
+            printf("FIFO fault at ref %d (page %d)\n", i+1, p[i]);
             f[j%fsize]=p[i];
             j++;
             fault++;
@@ -26,6 +28,7 @@ int fifo(int p[],int n,int fsize,int *hitc){
 
 /* ---------- LRU ---------- */
 int lru(int p[],int n,int fsize,int *hitc){
+    printf("LRU\n");
     int f[M],t[M]={0},i,j,fault=0,time=0;
     *hitc = 0;
     for(i=0;i<fsize;i++) f[i]=-1;
@@ -42,6 +45,7 @@ int lru(int p[],int n,int fsize,int *hitc){
             for(j=1;j<fsize;j++)
                 if(t[j]<t[l]) l=j;
 
+            printf("LRU fault at ref %d (page %d)\n", i+1, p[i]);
             f[l]=p[i];
             t[l]=++time;
             fault++;
@@ -52,6 +56,7 @@ int lru(int p[],int n,int fsize,int *hitc){
 
 /* ---------- OPT ---------- */
 int opt(int p[],int n,int fsize,int* hitc){
+    printf("OPT\n");
     int f[M],fault=0,pos;
     *hitc = 0;
     for(int i=0;i<fsize;i++){
@@ -62,6 +67,7 @@ int opt(int p[],int n,int fsize,int* hitc){
             (*hitc)++;
             continue;
         }
+        printf("OPT fault at ref %d (page %d)\n", i+1, p[i]);
         pos=0;
         int far=-1;
         for(int j=0;j<fsize;j++){
